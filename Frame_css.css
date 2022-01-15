@@ -1,0 +1,97 @@
+.header{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	background-color: #5B5B5B;
+}
+.navigation{
+	margin: 0rem 1.25rem;
+	position: relative;
+}
+.navigation_item{
+	position: relative;
+	display: inline-block;
+}
+.navigation a{
+	font-size: 1.25rem;
+	display:block;
+/* 	float: left; */
+	padding: 1.875rem 1.25rem;
+	text-decoration: none;
+	color: white;
+}
+.navigation .navigation_item:hover{
+	background-color: black;
+}
+.navigation .navigation_item:hover::after{
+	visibility: visible;
+}
+.navigation_item::after{
+	content: " ";
+	position: absolute;
+	border: solid 0.4375rem;
+	border-color: transparent transparent red transparent;
+	top: 91%;
+	left: 50%;
+	margin-top: -0.4375rem;
+	visibility: hidden;
+	margin-left: -0.21875rem;
+}
+.Serch{
+	margin: 0rem 1.25rem;
+	display: block;
+	position: relative;
+}
+.Serch_input{
+	margin: 0.625rem 0rem;
+	width: 9.375rem;
+	border: solid #5B5B5B 0.0625rem;
+	border-radius: 1.25rem;
+	height: 1.875rem;
+	outline: none;
+	padding-left: 1.875rem;
+}
+.Serch img{
+	position: absolute;
+	left: 0.625rem;
+	top: 1.0625rem;
+	width: 1.25rem;
+	height: auto;
+}
+.Title{
+	display: block;
+	position: relative;
+	margin: 0rem 1.25rem;
+}
+.Title img{
+	width: 3.125rem;
+	height: auto;
+}
+.Title_text{
+	display: inline-block;
+	color: white;
+	padding-top: 0.9375rem;
+	font-weight: bold;
+	font-size: 1.25rem;
+	font-family: "agency fb";
+}
+.Tabbar{
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color:#CE0000;
+	padding: 0.625rem 0rem;
+}
+.Tabbar a{
+	font-size: 0.3125rem;
+	padding: 0rem 1.25rem;
+	text-decoration: none;
+	color: white;
+	border: 0.0625rem solid transparent;
+	border-radius: 1.25rem;
+}
+.Tabbar a:hover{
+	background-color: #750000;
+}
