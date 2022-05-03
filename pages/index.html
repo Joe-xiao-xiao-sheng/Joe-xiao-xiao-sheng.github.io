@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>样本标注</title>
+    <!-- 引入css -->
+	
+    <link rel="stylesheet" href="../CSS/index.css">
+	<link rel="stylesheet" href="../CSS/Header.css" />
+    <!-- 引入js -->
+    <script src="../script/echars.min.js"></script>
+</head>
+
+<body>
+	<div id="Header" style="width: 100%;">
+		<div id="iconBox">
+			<img src="../img/logo.png" />
+		</div>
+		<ul id="items">
+			<li class="item_li" ><a href="index.html" style="color: #ffd04b;">样本标注</a></li>
+			<li class="item_li" ><a href="RealExtractionAside.html">实体识别</a></li>
+			<li class="item_li" ><a href="Atlas.html">知识图谱</a></li>
+		</ul>
+		<div id="user" onclick="getUserDetail()">
+			<p id="username"></p>
+			<img src="../img/headerImage.png" />
+		</div>
+	</div>
+    <div id="wrap">
+        <div class="section1 commoon" style="width: 33.33%;height: 49vh;">
+            <div class="section1-top">
+                <div class="section1-top-hd">
+                    <ul>
+                        <li>累计标注实体数量</li>
+                        <li>较昨日新增</li>
+                    </ul>
+                </div>
+                <div class="section1-top-bd">
+                    <ul>
+						<!-- 累计标注实体数量  -->
+                        <li class="section1-top-number">15841434</li>
+                        
+						<li class="section1-top-proportion">proportion</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section1-bottom">
+                <div class="section1-bottom-hd">
+                    <ul>
+                        <li>总任务量</li>
+                        <li>任务完成百分比</li>
+                    </ul>
+                </div>
+                <div class="section1-bottom-bd">
+                    <ul>
+						<!-- 总任务量 -->
+                        <li class="section1-bottom-number">166</li>
+                        <li class="section1-bottom-proportion">proportion</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="section2 commoon" style="width: 33.33%;height: 49vh;">
+            <div class="section2-top">
+                <div class="section2-top-hd">
+                    <ul>
+                        <li>累计样本数量</li>
+                        <li>较昨日新增</li>
+                    </ul>
+                </div>
+                <div class="section2-top-bd">
+                    <ul>
+						<!-- 累计样本数量 -->
+                        <li class="section2-sampleNum">15,841,434</li>
+                        <!-- 较昨日新增 -->
+						<li class="section2-newIncreased">0</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section2-bottom"></div>
+        </div>
+        <div class="section3 commoon" style="width: 33.33%;height: 49vh;"></div>
+        <div class="section4 commoon" style="width: 33.33%;height: 49vh;"></div>
+        <div class="section5 commoon" style="width: 66.66%;height: 49vh;"></div>
+    </div>
+	<script src="../script/Header.js"></script>
+    <script type="text/javascript">
+		
+		var option1_top = {
+		    tooltip: {
+		        trigger: 'item'
+		    },
+		    color: ['#91CC75', '#5470C6'],
+		    series: [
+		        {
+		            name: '比例',
+		            type: 'pie',
+		            radius: ['40%', '70%'],
+					// 热工标注与智能标注实际数量
+		            data: [
+		                { value: 1884, name: '人工标注' },
+		                { value: 25732, name: '智能标注' }
+		            ],
+		            itemStyle: {
+		                borderRadius: 10,
+		                borderColor: '#fff',
+		                borderWidth: 2
+		            },
+		            emphasis: {
+		                label: {
+		                    show: true,
+		                    fontSize: '16',
+		                    fontWeight: 'bold'
+		                }
+		            }
+		        }
+		    ]
+		}
+	
+		
+		var option1_bottom = {
+		
+		    tooltip: {
+		        trigger: 'item'
+		    },
+		    legend: {
+		        top: '0%',
+		        left: 'left',
+		        orient: 'vertical',
+		        textStyle: {
+		            color: '#ffffff'
+		        }
+		    },
+		    color: ['#2FB7CE', '#FD9DB6'],
+		    series: [
+		        {
+		            name: '任务完成百分比',
+		            type: 'pie',    // 设置图表类型为饼图
+		            radius: ['40%', '70%'],
+		            avoidLabelOverlap: false,
+		            itemStyle: {
+		                borderRadius: 10,
+		                borderColor: '#82FFFF',
+		                borderWidth: 2
+		            },
+		            emphasis: {
+		                label: {
+		                    show: true,
+		                    fontSize: '12',
+		                    fontWeight: 'bold'
+		                }
+		            },
+		            label: {
+		                show: false,
+		                position: 'center',
+		            },
+					// 任务完成百分比
+		            data: [          // 数据数组，name 为数据项名称，value 为数据项值
+		                { value: 87, name: '已完成', label: { color: "#fff" } },//设置单个标签颜色
+		                { value: 13, name: '未完成', label: { color: "#fff" } }
+		            ],
+		        }
+		    ]
+		}
+		
+		var option2 = {
+		    backgroundColor: '#d0d0d0',
+		    title: {
+		        text: '近一周累计标注数量趋势',
+		        textStyle: {
+		            //文字颜色
+		            color: '#000',
+		        }
+		    },
+		    xAxis: {
+		        type: 'category',
+		        boundaryGap: false,
+				// 日期
+		        data: [
+		            '2022-04-24',
+		            '2022-04-25',
+		            '2022-04-26',
+		            '2022-04-27',
+		            '2022-04-28',
+		            '2022-04-29',
+		            '2022-04-30'
+		        ],
+		        axisLabel: {
+		            interval: 0,
+		            rotate: 40,
+		            textStyle: {
+		                color: "#009393",
+		                fontSize: 10
+		            }
+		        },
+		
+		    },
+		    yAxis: {
+		        type: 'value',
+				splitLine: {
+				    show: true,
+				    lineStyle: {
+				        type: 'dashed',
+						color:'#fff'
+				    }
+				},
+		        axisLabel: {
+		            textStyle: {
+		                color: "#009393",
+		            }
+		        }
+		    },
+		
+		    series: [{
+		        type: 'line',
+				//日期对应数据一
+		        data: [5425, 5592, 5435, 12601, 10136, 8270, 25732],
+		        itemStyle: {
+		            normal: { label: { show: true }, color: '#FC7155' },
+		            lineStyle: {
+		                color: '#253A5D'
+		            }
+		        },
+		        lineStyle: { color: '#00CA95', width: 3 }
+		    },
+		    {
+		        type: 'line',
+				// 日期对应数据二
+		        data: [2286, 3395, 3385, 1582, 1583, 1727, 1884],
+		        itemStyle: {
+		            normal: { label: { show: true }, color: "#FC7155" },
+		            lineStyle: {
+		                color: '#253A5D'
+		            }
+		        },
+		        lineStyle: { color: "#6A4EF0", width: 3 }
+		    }
+		    ]
+		};
+		
+		var option3 = {
+		    backgroundColor: '#d0d0d0',
+		    title: {
+		        text: '近5日实体数量统计',
+		        textStyle: {
+		            //文字颜色
+		            color: '#000',
+		        }
+		    },
+		    tooltip: {
+		        trigger: 'axis',
+		        axisPointer: {
+		            type: 'shadow',
+		        }
+		    },
+		    legend: {
+		        textStyle: {
+		            color: '#fff'
+		        }
+		    },
+		    grid: {
+		        left: '3%',
+		        right: '4%',
+		        bottom: '3%',
+		        containLabel: true
+		    },
+		    xAxis: {
+		        type: 'value',
+		        boundaryGap: [0, 0.01],
+		        splitLine: {
+		            show: true,
+		            lineStyle: {
+		                type: 'dashed',
+						color:'#fff'
+		            }
+		        },
+		        axisLabel: {
+		            textStyle: {
+		                color: "#009393",
+		            }
+		        }
+		    },
+		    yAxis: {
+		        type: 'category',
+				// 日期
+		        data: ['2022-04-26', '2022-04-27', '2022-04-28', '2022-04-29', '2022-04-30'],
+		        axisLabel: {
+		            textStyle: {
+		                color: "#009393",
+		            }
+		        }
+		    },
+		    series: [
+		
+		        {
+		            name: '迭代标注',
+		            type: 'bar',
+					
+		            data: [5435, 12601, 10136, 8270, 25732],
+		            barWidth: "20%",
+		            itemStyle: {
+		                normal: {
+		                    label: {
+		                        show: true, //开启显示
+		                        position: 'right', //在上方显示
+		                        textStyle: { //数值样式
+		                            color: '#C48888',
+		                            fontSize: 12
+		                        }
+		                    },
+		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+		                        offset: 0,
+		                        color: '#C48888'
+		                    }, {
+		                        offset: 1,
+		                        color: '#C48888'
+		                    }]),
+		                }
+		            },
+		        },
+		        {
+		            name: '人工标注',
+		            type: 'bar',
+		            data: [3383, 1582, 1993, 1787, 1884],
+		            barWidth: "20%",
+		            itemStyle: {
+		                normal: {
+		                    label: {
+		                        show: true, //开启显示
+		                        position: 'right', //在上方显示
+		                        textStyle: { //数值样式
+		                            color: '#0080FF',
+		                            fontSize: 12
+		                        }
+		                    },
+		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+		                        offset: 0,
+		                        color: '#0080FF'
+		                    }, {
+		                        offset: 1,
+		                        color: '#0080FF'
+		                    }]),
+		                }
+		            },
+		        }
+		    ]
+		};
+		
+		var option4 = {
+		    backgroundColor: '#d0d0d0',
+		    title: {
+		        text: '人工标注与智能标注占比',
+		        textStyle: {
+		            //文字颜色
+		            color: '#000',
+		        }
+		
+		    },
+		    tooltip: {
+		        trigger: 'item'
+		    },
+		    legend: {
+		        top: '15%',
+		        left: 'left',
+		        orient: 'vertical',
+		        textStyle: {
+		            color: '#3C3C3C'
+		        }
+		    },
+		    color: ['#AED6F1', '#D6EAF8'],
+		    series: [
+		        {
+		            name: '访问来源',
+		            type: 'pie',    // 设置图表类型为饼图
+		            radius: ['40%', '70%'],
+		            avoidLabelOverlap: false,
+		            itemStyle: {
+		                borderRadius: 10,
+		                borderColor: '#F0F0F0',
+		                borderWidth: 2
+		            },
+		            emphasis: {
+		                label: {
+		                    show: true,
+		                    fontSize: '20',
+		                    fontWeight: 'bold'
+		                }
+		            },
+		            label: {
+		                show: false,
+		                position: 'center',
+		            },
+		            data: [          // 数据数组，name 为数据项名称，value 为数据项值
+		                { value: 87, name: '智能标注', label: { color: "#fff" } },//设置单个标签颜色
+		                { value: 13, name: '人工标注', label: { color: "#fff" } }
+		            ],
+		        }
+		    ]
+		};
+		
+		
+		var option5 = {
+		    backgroundColor: '#d0d0d0',
+		    title: {
+		        text: '实体数量统计 (按类别) TOP 10',
+		        textStyle: {
+		            //文字颜色
+		            color: '#000',
+		        }
+		    },
+		    tooltip: {},
+		    legend: {},
+		    xAxis: {
+		        
+				// 数据
+				data: ["中药", "变化情况", "持续时间", "日期", "症状前缀", "舌脉", "西医疾病", "部位", "阳性症状", "阴性症状"],
+		        
+				
+				axisLabel: {
+		            textStyle: {
+		                color: "#009393",
+		            }
+		        }
+		
+		    },
+		    yAxis: {
+		        splitLine: {
+		            show: true,
+		            lineStyle: {
+		                type: 'dashed',
+						color:'#fff'
+		            }
+		        },
+		        axisLabel: {
+		            textStyle: {
+		                color: "#009393",
+		            }
+		        }
+		    },
+		    series: [{
+		        type: 'bar',
+		        data: [30441, 495718, 484286, 320131, 263888, 559836, 707466, 160660, 5706575, 4959085],
+		        barWidth: "20%",
+		        itemStyle: {
+		            normal: {
+		                label: {
+		                    show: true, //开启显示
+		                    position: 'top', //在上方显示
+		                    textStyle: { //数值样式
+		                        color: '#007979',
+		                        fontSize: 14
+		                    }
+		                },
+		                barBorderRadius: [20, 20, 20, 20],
+		                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+		                    offset: 0,
+		                    color: '#FF77FF'
+		                }, {
+		                    offset: 1,
+		                    color: '#DDDDFF'
+		                }]),
+		            }
+		        },
+		    }]
+		};
+        // section1
+        var mychart1_top = echarts.init(document.querySelector(".section1-top-proportion"));
+        
+        mychart1_top.setOption(option1_top);
+        var mychart1_bottom = echarts.init(document.querySelector(".section1-bottom-proportion"));
+        
+        mychart1_bottom.setOption(option1_bottom);
+        // section2
+        var myChart2 = echarts.init(document.querySelector(".section2-bottom"))
+        
+        myChart2.setOption(option2);
+        // section3
+        var myChart3 = echarts.init(document.querySelector('.section3'));
+        
+        myChart3.setOption(option3);
+        //section4
+        var myChart4 = echarts.init(document.querySelector('.section4'));
+        
+        myChart4.setOption(option4);
+        //section5
+        var myChart5 = echarts.init(document.querySelector('.section5'));
+        
+        myChart5.setOption(option5);
+    </script>
+</body>
+
+</html>

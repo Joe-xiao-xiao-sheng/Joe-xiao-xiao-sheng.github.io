@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>首页</title>
+		
+		
+		<link rel="stylesheet" href="../CSS/Header.css" />
+		<link rel="stylesheet" href="../plugins/elementui/index.css" />
+		<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css" />
+		<script src="../script/vue.js"></script>
+		<script src="../plugins/elementui/index.js"></script>
+	</head>
+	
+	<body>
+		<div id="Header" style="width: 100%;">
+			<div id="iconBox">
+				<img src="../img/logo.png" />
+			</div>
+			<ul id="items">
+				<li class="item_li" ><a href="userIndex.html" style="color: #ffd04b;">首页</a></li>
+				<li class="item_li" ><a href="QuickConsultation.html">立即就诊</a></li>
+			</ul>
+			<div id="user" onclick="getUserDetail()">
+				<p id="username"></p>
+				<img src="../img/headerImage.png" />
+			</div>
+		</div>
+		
+		<div id="contain" style="width: 100%; " >
+			
+			<template>
+			  <el-carousel :interval="4000" type="card" height="100px" style="margin: 1rem 0rem;">
+			    <el-carousel-item v-for="item in 6" :key="item">
+				  <div id="itemBox">
+				  	
+				  </div>
+			    </el-carousel-item>
+			  </el-carousel>
+			</template>
+			
+			<div id="main" style="width: 100%; position: relative; display: flex;">
+				<div id="leftContain" style="width: 70%; display: flex;" >
+					<div id="chat">
+						<div id="record" style="overflow-y: auto;" >
+							<div class="historyLine">
+								<img src="../img/robot.png" align="top" />
+								<span>有什么可以帮您的呢？</span>
+							</div>
+						</div>
+						<div></div>
+						<div id="write">
+							<input type="text" id="chatInput" v-model="ask" style="overflow-y: auto;" ></input>
+							<el-button class="elbutton" id="sendButton" @click="askSend()">发送</el-button>
+						</div>
+					</div>
+					<div id="tipsBox">
+						<el-tag class="eltag" v-for="item in quickAsk" @click="quickAskEvent(item)">{{item}}</el-tag>
+					</div>
+					
+				</div>
+
+				<div id="rightContain" style="width: 30%; border-left: dashed 0.125rem 	#BEBEBE; padding-left: 0.625rem;">
+					<h2>医疗报告
+						<el-button style="margin-left: 10%;" @click="getReport()">生成医疗报告</el-button>
+						<el-button style="margin-left: 5%;" @click="dialogVisible = true">导出医疗报告</el-button>
+					</h2>
+					<div id="reportContain" style="display: none;">
+						<div class="line">
+							<label>主诉：<span v-text="report.mainSuit"></span></label>
+						</div>
+						<div class="line">
+							<label>现病史：<span v-text="report.presentIllness"></span></label>
+						</div>
+						<div class="line">
+							<label>辅助检查：<span v-text="report.examination"></span></label>
+						</div>
+						<div class="line">
+							<label>既往史：<span v-text="report.pastIllness"></span></label>
+						</div>
+						<div class="line">
+							<label>诊断：<span v-text="report.diagnosis"></span></label>
+						</div>
+						<div class="line">
+							<label>建议：<span v-text="report.suggest"></span></label>
+						</div>
+					</div>
+						
+					
+					
+					
+					<el-dialog title="预览" :visible.sync="dialogVisible" width="40%" :before-close="handleClose"> 
+						<h3>医疗报告</h3>
+						<div class="line">
+							<label>主诉：<span v-text="report.mainSuit"></span></label>
+						</div>
+						<div class="line">
+							<label>现病史：<span v-text="report.presentIllness"></span></label>
+						</div>
+						<div class="line">
+							<label>辅助检查：<span v-text="report.examination"></span></label>
+						</div>
+						<div class="line">
+							<label>既往史：<span v-text="report.pastIllness"></span></label>
+						</div>
+						<div class="line">
+							<label>诊断：<span v-text="report.diagnosis"></span></label>
+						</div>
+						<div class="line">
+							<label>建议：<span v-text="report.suggest"></span></label>
+						</div>
+					  <span slot="footer" class="dialog-footer">
+						<el-button @click="dialogVisible = false">取 消</el-button>
+						<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+					  </span>
+					</el-dialog>
+					
+					<div id="tips">
+						<div id="tipText">
+							{{currentTip}}
+						</div>
+						<img id="tipIcon" src="../img/LittleDoctor.jpg" @click="tipChange()" />
+					</div>
+					
+				</div>
+				
+			</div>
+		</div>
+		
+		
+		<script src="../script/Header.js"></script>
+		<style>
+		  .el-carousel__item h3 {
+		    color: #475669;
+		    font-size: 14px;
+		    opacity: 0.75;
+		    line-height: 150px;
+		    margin: 0;
+		  }
+		
+		  .el-carousel__item:nth-child(2n) {
+		     background-color: #99a9bf;
+		  }
+		  
+		  .el-carousel__item:nth-child(2n+1) {
+		     background-color: #d3dce6;
+		  }
+		  .line{
+			  margin: 0.625rem;
+		  }
+		</style>
+		<script>
+			console.log(JSON.stringify(JSON.parse(sessionStorage.getItem("user"))))
+			var app = new Vue({
+				el:"#contain",
+				data(){
+					return {
+						dialogVisible: false,
+						report:{
+							// mainSuit:"发烧。",
+							// presentIllness:"患儿无明显诱因下出现发烧情况，无咳嗽咳痰，无其他明显不适症状。精神状态适中。。",
+							// examination:"暂无。",
+							// pastIllness:"既往体健。",
+							// diagnosis:"小儿发热",
+							// suggest:"予退热药服用，密观。"
+						},
+						ask:"",
+						history:"",
+						answer:"",
+						quickAsk:["感冒怎么办","中风应该注意什么","感冒忌吃什么","浑身乏力怎么办","感觉胸闷气短","感觉四肢麻木"],
+						tips:[
+							"多运动可以有效的预防感冒增强免疫力",
+							"晨练之前能饮食的话效果会更佳！",
+							"畏寒体弱和胃虚的人不适宜于吃香蕉，因为香蕉在胃肠中消化得很慢，对胆囊不好。",
+							"咸鱼不能和西红柿等同食；食蟹时不食泥鳅、杮子、生梨、香瓜、花生、浓茶和冷饮等。"
+						],
+						currentTip:"你好！"
+					};
+				},
+				methods:{
+					handleClose: function(){
+						this.$confirm('确认关闭？')
+						          .then(_ => {
+						            done();
+						          })
+						          .catch(_ => {});
+					},
+					askSend: function(){
+						if(app.ask == "" || app.ask == null){
+							return ;
+						}
+						app.historyAdd("User");
+						
+						// 发送请求获取数据
+						// fetch()
+						fetch("http://localhost:8081/ask/askSend?ask=" + app.ask,{
+							method: 'GET',
+							headers:{
+								'Content-Type': 'application/json'
+							}
+						}).then(resp => {
+							if(resp.ok) return resp.json()
+							else throw new Error("请求错误,请检查网络信息")
+						}).then(data => {
+							if(data.success == "false"){
+								alert("获取失败，请检查网络状况")
+								return ;
+							}
+								app.answer = data.data;
+								console.log(app.answer)
+								app.historyAdd("AI");
+								// 消息发送后进行清空
+								document.getElementById("chatInput").value = "";
+								app.ask = "";
+						})
+					},
+					quickAskEvent: function(tag){
+						app.ask = tag;
+					},
+					tipChange: function(){
+						var index = Math.floor((Math.random()*app.tips.length));
+						app.currentTip = app.tips[index];
+					},
+					historyAdd: function(role){
+						var url = "../img/user.png";
+						var text = app.ask;
+						if(role == "AI"){
+							url = "../img/robot.png";
+							text = app.answer
+							var div = document.createElement("div");
+							div.className = "historyLine";
+							var img = document.createElement("img");
+							img.src = url;
+							img.align = "top";
+							var span = document.createElement("span");
+							span.innerText = text;
+							div.appendChild(img);
+							div.appendChild(span);
+							document.getElementById("record").appendChild(div);
+						}
+						if(role == "User"){
+							var div = document.createElement("div");
+							div.className = "historyLine";
+							div.style = "justify-content: flex-end;";
+							var img = document.createElement("img");
+							img.src = url;
+							img.align = "top";
+							var span = document.createElement("span");
+							span.innerText = text;
+							div.appendChild(span);
+							div.appendChild(img);
+							document.getElementById("record").appendChild(div);
+						}
+					},
+					getReport: function(){
+						var report = document.getElementById("reportContain");
+						report.style.display = "block";
+						fetch("http://localhost:8081/ask/report",{
+							method: 'GET',
+							headers:{
+								'Content-Type': 'application/json'
+							}
+						}).then(resp => {
+							if(resp.ok) return resp.json()
+							else throw new Error("请求错误,请检查网络信息")
+						}).then(data => {
+							 if(data.success == "false"){
+							 	alert("获取失败，请检查网络状况")
+								return ;
+							 }
+							 console.log(data.data)
+							// app.report = JSON.stringify(data.data);
+							app.report = data.data
+							console.log(app.report)
+						})
+					}
+				}
+			})
+		
+		
+		</script>
+		
+		<style type="text/css">
+			#record{
+				height: 28rem;
+				border: solid 0.0625rem #d0d0d0;
+			}
+			.historyLine{
+				margin: 0.3125rem;
+				display: flex;
+				width: 98%;
+			}
+			.historyLine img{
+				display: block;
+				position: relative;
+				width: 5%;
+				height: 5%;
+			}
+			.historyLine span{
+				display: block;
+				overflow: auto;
+				position: relative;
+				padding: 0.325rem;
+				width: auto;
+				border: solid #333333 0.0625rem;
+			}
+			#chat{
+				width: 70%;
+				padding-right: 1%;
+				border-right: dashed 0.125rem #BEBEBE;
+			}
+			#tipsBox{
+				width: 30%;
+			}
+			#chatInput{
+				width: 75%;
+				margin-left: 2%;
+				height: 2rem;
+				display: inline-block;
+				position: relative;
+				top: 0.9rem;
+			}
+			#sendButton{
+				position: relative;
+				top: 0.9375rem;
+				margin-left: 5%;
+			}
+			.eltag{
+				margin: 0.625rem;
+			}
+			#tips #tipText{
+				position: absolute;
+				/* bottom: 10rem; */
+				bottom: 0rem;
+				right: 41%;
+				width: 7rem;
+				height: 6.25rem;
+				margin-left: 0.625rem;
+				padding: 0.625rem;
+				border: solid #000000 0.0625rem;
+				font-family: "bodoni mt";
+				background-color: #F0F8FF;
+				border-radius: 0.625rem;
+				opacity: 0.8;
+				overflow: auto;
+			}
+			#tips img{
+				display: block;
+				position: absolute;
+				bottom: -1rem;
+				right: 31%;
+				width: 9.375rem;
+				height: 9.375rem;
+				opacity: 0.8;
+			}
+			#tips img:hover{
+				cursor: pointer;
+			}
+		</style>
+		
+	</body>
+</html>

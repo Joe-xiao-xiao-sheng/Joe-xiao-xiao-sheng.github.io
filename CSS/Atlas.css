@@ -1,0 +1,57 @@
+#selectBox{
+	width: 20%;
+	height: 50rem;
+	background-color:	#FFECF5;
+}
+#selectBox input{
+	border-radius: 0.625rem;
+	font-size: 1.25rem;
+	width: 3.125rem;
+	margin-left: 1.25rem;
+	padding:0.3125rem 0.625rem;
+	background-color: #00FFFF;
+}
+#selectBox h2{
+	margin-left: 1.25rem;
+}
+
+#selectBox .tags{
+	display: inline-block;
+	margin: 0.325rem 0.325rem;
+	border-radius: 0.625rem;
+	font-size: 1rem;
+}
+#detailBox{
+	display: none;
+	/* display: block; */
+	opacity: 0.5;
+	position:absolute;
+	top: 0rem;
+	right: 0rem;
+	background-color: #00FFFF;
+}
+#detailBox td{
+	margin: 0rem;
+	width: auto;
+	text-align: center;
+	padding: 0.625rem;
+	font-size: 0.9375rem;
+}
+#atlasBox{
+	width: 80%;
+	height: 50rem;
+	/* background-color: #FFE4C4; */
+	position: relative;
+}
+#contain{
+	display: flex;
+}
+text {
+    display: block;
+    white-space: nowrap;
+	text-anchor: middle;
+	width: 3.125rem;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	/* background-color: #000000; */
+}

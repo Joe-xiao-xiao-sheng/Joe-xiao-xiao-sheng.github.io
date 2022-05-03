@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>问答界面</title>
+		<link rel="stylesheet" href="../plugins/elementui/index.css" />
+		<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="../CSS/AIanswerCSS.css" />
+		<link rel="stylesheet" href="../CSS/Header.css" />
+		<script src="../plugins/elementui/index.js"></script>
+	</head>
+	<body>
+		<div id="Header" style="width: 100%;">
+			<div id="iconBox">
+				<img src="../img/logo.png" />
+			</div>
+			<ul id="items">
+				<li class="item_li" ><a href="userIndex.html">首页</a></li>
+				<li class="item_li" ><a href="AI_answer.html">智能问答</a></li>
+				<li class="item_li" ><a href="#">立即就诊</a></li>
+				<!-- <li class="item_li" ><a href="Atlas.html">知识图谱</a></li> -->
+			</ul>
+			<div id="user" onclick="getUserDetail()">
+				<p id="username"></p>
+				<img src="../img/headerImage.png" />
+			</div>
+		</div>
+		<div id="main">
+			<div id="contain">
+				<div id="textContain">
+					
+					<!-- 记录聊天记录 -->
+					<div id="record" >
+						<div v-for="item in history">
+							<img v-if="item.name == 'AI'" src="../img/robot.png" />
+							<img v-if="item.name == 'User'" src="../img/user.png" />
+							<span v-text="item.say"></span>
+						</div>
+					</div>
+					<!-- 用户输入框 -->
+					<div id="write">
+						<textarea v-model="ask"></textarea>
+						<el-button class="elbutton" @click="askSend()">发送</el-button>
+					</div>
+				</div>
+				<!-- 提示标签框 -->
+				<div id="labelContain">
+					<el-tag class="eltag" v-for="item in tags" @click="tagClick(item)">{{item}}</el-tag>
+				</div>
+			</div>
+			<div id="tips">
+				<div id="tipText">
+					{{currentTip}}
+				</div>
+				<img id="tipIcon" src="../img/LittleDoctor.jpg" @click="tipChange()" />
+			</div>
+		</div>
+		
+		<script src="../script/vue.js"></script>
+		<script src="../script/axios-0.18.0.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<script src="../script/Header.js"></script>
+		<script>
+			var app = new Vue({
+				el:"#main",
+				data:{
+					ask:"",
+					history:[{name: "AI",say:"你好！我是小武的助理，很高心为您服务༼ つ ◕_◕ ༽つ"}],
+					tags:["感冒症状","感冒忌吃什么","如何正确确保饮食"],
+					answer:"",
+					tips:[
+						"多运动可以有效的预防感冒增强免疫力",
+						"晨练之前能饮食的话效果会更佳！",
+						"畏寒体弱和胃虚的人不适宜于吃香蕉，因为香蕉在胃肠中消化得很慢，对胆囊不好。",
+						"咸鱼不能和西红柿等同食；食蟹时不食泥鳅、杮子、生梨、香瓜、花生、浓茶和冷饮等。"
+					],
+					currentTip:"健康小贴士"
+				},
+				methods:{
+					// 发送信息请求，将返回AI回答
+					askSend: function(){
+						// 将用户输入填入历史记录中
+						this.history.push({name: 'User' , say: this.ask})
+						var his = this.history;
+						axios.get("http://localhost:8081/ask/askSend?ask=" + this.ask).then( function(resp){
+							console.log(resp.data.success);
+							// 判断是否响应成功
+							if(!resp.data.success)	alert();
+							console.log(resp.data.data)
+							// 将AI回答填入历史记录中
+							his.push({name: "AI" ,say: resp.data.data })
+						})
+						// .catch(function(error){
+						// 	alert("请检查网络状况")
+						// })
+					},
+					tagClick: function(tag){
+						this.ask = tag;
+					},
+					tipChange: function(){
+						var index = Math.floor((Math.random()*app.tips.length));
+						app.currentTip = app.tips[index];
+					}
+				}
+			})
+		</script>
+		
+	</body>
+</html>

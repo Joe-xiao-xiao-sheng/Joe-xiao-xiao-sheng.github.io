@@ -1,0 +1,55 @@
+.checkBoxItem{
+	margin-left: 2rem;
+	margin-top: 0.625rem;
+	display: block;
+}
+.checkBoxTitle{
+	margin: 0.0625rem 0.625rem;
+	width: 90%;
+}
+#checkboxContain{
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 15%;
+	height: 100%;
+	background-color: 	#D7FFEE;
+}
+#contain{
+	width: 100%;
+	height: 50rem;
+	position: relative;
+	/* background-color: #00FFFF; */
+	display: flex;
+}
+#HeaderContain{
+	width: 100%;
+	height: 3.75rem;
+	padding: 0rem;
+	border: 0rem;
+	margin: 0rem;
+}
+#main{
+	padding: 1.25rem;
+	width: 65%;
+	/* background-color: #4CD964; */
+}
+#keys{
+	width:20%;
+	background-color: 	#D9FFFF;
+}
+#keys h4{
+	margin: 0.625rem;
+}
+#keys span{
+	display: inline-block;
+	border-radius: 0.3125rem;
+	padding: 0rem 0.3125rem;
+	margin-left: 0.625rem;
+	margin-bottom: 0.625rem;
+}
+.symptom{
+	background-color: #D9B3B3;
+}
+.sign{
+	background-color: #8F8F94;
+}

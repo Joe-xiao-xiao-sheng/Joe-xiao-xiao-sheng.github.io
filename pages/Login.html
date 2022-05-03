@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>登录界面</title>
+		<link rel="stylesheet" href="../CSS/LiginPage.css"/>
+	</head>
+	<body background="../img/background.jpg">
+		<div id="loginContain">
+			<div id="contain">
+				<div class="formContain">
+					<!-- <form method="post" action="http://localhost:8080/login"> -->
+					<div id="form">
+						<h2>用户登录</h2>
+						<div class="item"><span>账号 </span><input type="text" v-model="user.userId" id="userid" name="id"></div>
+						<div class="item"><span>密码 </span><input type="password" v-model="user.password" id="password" name="password"></div>
+						<!-- <input type="submit" id="button" value="登录"> -->
+						<select id="roleSelect" v-model="user.role">
+							<option value ="患者">患者</option>
+							<option value ="医生">医生</option>
+						</select>
+						<button @click="Login" id="button">登录</button>
+						<p id="createInfomation">第一次使用<a href="create.html">点我立即注册</a></p>
+					</div>
+				</div>
+				<!-- 图片展示 -->
+				<div class="viewContain">
+					<img v-bind:src="url" />
+				</div>
+			</div>
+		</div>
+		
+		
+		<script src="../script/axios-0.18.0.js"></script>
+		<script src="../script/vue.js"></script>
+		<script>
+			var view = new Vue({
+				el:"#contain",
+				data:{
+					user:{
+						role:"",
+						userId:"",
+						password:""
+					},
+					url: "../img/智慧医疗.jpg"
+				},
+				methods:{
+					Login: function(){
+						fetch("http://localhost:8081/login",{
+							method: 'POST',
+							body: JSON.stringify(view.user),
+							headers:{
+								'Content-Type': 'application/json'
+							}
+						}).then(resp => {
+							// var user = JSON.parse(sessionStorage.getItem("user"));
+							if(resp.ok) return resp.json()
+							else throw new Error("请求错误,请检查网络信息")
+						}).then(data => {
+							console.log(data);
+							if(data.success == false){
+								alert("登陆失败");
+								return ;
+							}
+							var userStr = data.data;
+							console.log("userStr: " + userStr)
+							sessionStorage.setItem("user" ,JSON.stringify(userStr));
+							var user = JSON.parse(sessionStorage.getItem("user"));
+							console.log("user: " + JSON.stringify(user));
+							
+							sessionStorage.setItem("role",view.user.role);
+							var role = sessionStorage.getItem("role");
+							console.log();
+							if(role == "医生")
+								window.location.href = "index.html";
+							else if(role == "患者"){
+								window.location.href = "userIndex.html";
+							}
+							else{
+								window.location.href = "Login.html";
+							}
+						});
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>知识图谱</title>
+		<link rel="stylesheet" href="../plugins/elementui/index.css" />
+		<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+		<script src="../script/d3.min.js"></script>
+		<script src="../script/vue.js"></script>
+		<script src="../script/axios-0.18.0.js"></script>
+		<link rel="stylesheet" href="../CSS/Atlas.css" />
+		<link rel="stylesheet" href="../CSS/Header.css" />
+		<script src="../plugins/elementui/index.js"></script>
+	</head>
+	<body>
+		<div id="Header" style="width: 100%;">
+			<div id="iconBox">
+				<img src="../img/logo.png" />
+			</div>
+			<ul id="items">
+				<li class="item_li" ><a href="index.html">样本标注</a></li>
+				<li class="item_li" ><a href="RealExtractionAside.html">实体识别</a></li>
+				<li class="item_li" ><a href="Atlas.html" style="color: #ffd04b;">知识图谱</a></li>
+			</ul>
+			<div id="user" onclick="getUserDetail()">
+				<p id="username"></p>
+				<img src="../img/headerImage.png" />
+			</div>
+		</div>
+		<div id="contain">
+			
+			<div id="selectBox">
+				<h2>标签<input type="number" v-model="labelNumber" /></h2>
+				<el-tag class="tags" v-for="item in labels" v-text="item" @click="getAtlasByLabel(item)"></el-tag>
+				<h2>关系<input type="number" v-model="relationNumber" /></h2>
+				<el-tag class="tags" type="success" v-for="item in relations" v-text="item" @click="getAtlasByRelation(item)"></el-tag>
+			</div>
+			<div id="atlasBox">
+				<svg id="show" width="100%" height="100%" ></svg>
+				<div id="detailBox">
+					<table id="detail" border="1">
+						
+					</table>
+				</div>
+			</div>
+		</div>
+		
+		
+		<script src="../script/Header.js"></script>
+		<script  type="text/javascript">
+			
+			
+			var links = null;
+			var linksText = null;
+			var gs = null;
+			var forceSimulation = null;
+			var app = new Vue({
+				el:"#contain",
+				data:{
+					labelNumber:20,
+					detail:"",
+					relationNumber:10,
+					labels:["Disease","Alias","Check","Department","Drug","Food","Producer","Symptom"],	// 所有的标签
+					relations:["Alias_is","Acompany_with","Belongs_to","Common_drug","Do_eat","Drugs_of","Has_symptom","Need_check","No_eat","Recommand_eat","Recommand_drug"],	// 所有的关系
+					nodes:[
+						// {name:"湖南邵阳",id:2,detail:"{name:湖南邵阳}"},
+						// {name:"山东莱州sdf",id:5,detail:""},
+						// {name:"广东阳江",id:7,detail:""},
+						// {name:"山东枣庄",id:3,detail:""},
+						// {name:"泽",id:4,detail:""},
+						// {name:"恒",id:10,detail:""},
+						// {name:"鑫",id:6,detail:""},
+						// {name:"明山",id:13,detail:""},
+						// {name:"班长",id:8,detail:""}
+					],	// 所选中的标签或者关系的节点
+					edges:[
+						{source:2,target:4,relation:"籍贯",value:1.3},
+						{source:5,target:10,relation:"籍贯",value:1.3}
+					],	// 所选中的标签或关系的关系线
+					marge:{top:60 ,left:60 ,bottom:100 ,right:100}
+				},
+				methods:{
+					getAtlasByLabel: function(item){
+						removeAll("show");
+						var svg = document.getElementById("show")
+						axios.get("http://localhost:8081/atlas/labels?label=" + item + "&number=" + app.labelNumber).then(function (resp){
+							app.nodes = resp.data.nodes;
+							app.edges = resp.data.edges;
+							app.flushAtlas();
+						})
+						// 发送请求
+					},
+					getAtlasByRelation: function(item){
+						console.log(item);
+						removeAll("show");
+						axios.get("http://localhost:8081/atlas/relation?relation=" + item  + "&number=" + app.relationNumber).then(function (resp){
+							app.nodes = resp.data.nodes;
+							app.edges = resp.data.edges;
+							app.clear()
+							app.flushAtlas();
+						})
+						// 发送请求
+					},
+					clear: function(){
+						// location.reload();
+					},
+					flushAtlas: function(){
+						// console.log(app.nodes + "Hello")
+						
+						// 下面是力导向图的创建
+						// 数据初始化		
+						if(app.nodes == null || app.nodes.length == 0)
+							return;
+						var svg = d3.select("svg");
+						// console.log(svg == null)
+						var width = svg.attr("width");
+						var height = svg.attr("height");
+						// console.log(width + "  " + height)
+						var g = svg.append("g").attr("transform","translate("+app.marge.top+","+app.marge.left+")");
+						
+						//设置一个color的颜色比例尺，为了让不同的扇形呈现不同的颜色
+						var colorScale = d3.scaleOrdinal()
+							.domain(d3.range(app.nodes.length))
+							.range(d3.schemeCategory10);
+						
+						if(app.edges != null ){
+							app.edges.forEach(function(e){
+								if(typeof e.source=="number"&&typeof e.target=="number"){
+									var sourceNode = app.nodes.filter(function(n){
+										return n.id === e.source;
+									})[0];
+									var targetNode = app.nodes.filter(function(n){
+										return n.id === e.target;
+									})[0];
+									e.source = sourceNode;
+									e.target = targetNode;
+								}
+							});	
+						}
+						
+						
+						
+						// 以nodes节点创建仿真
+						forceSimulation = d3.forceSimulation(app.nodes)
+							.force("charge",d3.forceManyBody())	//万有引力
+							.force("link",d3.forceLink())
+							.force("center",d3.forceCenter())
+							.on("tick",ticked);
+						
+						// 设置边数据
+						if(app.edges != null ){
+							forceSimulation.force("link")
+								.links(app.edges)
+								.distance(function(d){//每一边的长度
+									return d.value*250;
+								})  
+						}
+							
+						// 设置中心力的位置
+						forceSimulation.force("center")
+						.x(400).y(300);
+								
+						if(app.edges != null ){
+							links = g.append("g").selectAll("line")
+								.data(app.edges).enter()
+								.append("line")
+								.attr("stroke",function(d,i){
+									return colorScale(i);
+								}).attr("stroke-width",2)
+						}
+						
+						
+						if(app.edges != null ){
+							linksText = g.append("g").selectAll("text")
+								.data(app.edges).enter()
+								.append("text")
+								.attr("style","color:white;")
+								.text(function(d){
+									return d.relation;
+								})
+						}
+							
+						gs = g.append("g").selectAll(".circleText")
+								.data(app.nodes).enter().append("g")
+							
+						gs.append("circle")
+							.attr("r", 40)
+							.attr("fill", function(d,i){
+								return d.color;
+							});
+							
+						gs
+						.on("mouseover",function(d,i){
+							// alert(i.detail);
+							var div = document.getElementById("detailBox");
+							div.style.display = "block";
+							var table = document.getElementById("detail");
+							table.innerHTML = "";
+							app.detail = i.detail;
+							var obj = JSON.parse(app.detail);
+							var table = document.getElementById("detail");
+							var add = 1;
+							for(var key in obj){
+								console.log(add++)
+								var tr = document.createElement("tr");
+								var td = document.createElement("td");
+								td.innerText = key;
+								var td2 = document.createElement("td");
+								td2.innerText = obj[key];
+								tr.appendChild(td);
+								tr.appendChild(td2);
+								table.appendChild(tr);
+							}
+						})
+						.on("mouseout",function(){
+							var div = document.getElementById("detailBox");
+							div.style.display = "none";
+							// d3.select(this).transition().duration(1000).attr("fill","red").style("fill-opacity",0.2);
+							
+						})
+						.call(d3.drag()
+						.on("start",started)
+						.on("drag",dragged)
+						.on("end",ended)
+						);
+							
+						var texts = gs.append("text");
+							
+						texts
+						.attr("dominant-baseline","middle")
+						.attr("text-anchor", "middle")//在圆圈中加上数据
+						.attr("style","font-family:'SimSun'")
+						.text(function(d){
+							if(d.name.length < 5)
+							return d.name;
+							else{
+								return d.name.slice(0,3) + "..."
+							}
+						})
+						
+						
+					}
+				}
+			})
+			//--------------------------------------------------------------------------
+			app.flushAtlas()
+			function ticked(){
+				if(app.edges != null ){
+					links	// 设置 links 的位置参数，一般都是这样写
+						.attr("x1",function(d){return d.source.x;})
+						.attr("y1",function(d){return d.source.y;})
+						.attr("x2",function(d){return d.target.x;})
+						.attr("y2",function(d){return d.target.y;});
+						
+					linksText.attr("x", d => (d.source.x + d.target.x) / 2)
+						.attr("y", d => (d.source.y + d.target.y) / 2)
+				}
+					
+				gs
+					.attr("transform",function(d){
+						
+						return "translate(" + d.x + "," + d.y + ")";
+					})
+			}
+			
+			
+			function started(event) {
+			  if (!event.active) forceSimulation.alphaTarget(0.3).restart();
+			  event.subject.fx = event.subject.x;
+			  event.subject.fy = event.subject.y;
+			}
+			
+			function dragged(event) {
+			  event.subject.fx = event.x;
+			  event.subject.fy = event.y;
+			}
+			
+			function ended(event) {
+			  if (!event.active) forceSimulation.alphaTarget(0);
+			  event.subject.fx = null;
+			  event.subject.fy = null;
+			}
+		
+			function removeAll(id){
+				var nod = document.getElementById(id);
+				console.log("判断获取svg对象是否成功")
+				console.log(nod == null)
+				// svg.parentNode.removeChild(svg);	
+				var childs = nod.childNodes; 
+				for(var i = 0; i < childs.length; i++) { 
+				  nod.removeChild(childs[i]); 
+				}
+			}
+		</script>
+		<style>
+			
+			text{
+				color: white;
+			}
+		</style>
+	</body>
+</html>
+</el-tag>

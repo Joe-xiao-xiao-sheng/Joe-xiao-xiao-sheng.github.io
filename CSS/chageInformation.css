@@ -1,0 +1,28 @@
+#rightContain div{
+	margin-top: 0.625rem;
+	margin-left: 0.625rem;
+}
+#rightContain span{
+	display: inline-block;
+	width: 20%;
+	font-size: 1.875rem;
+	color: 	#00FFFF;
+}
+#rightContain input{
+	width: 70%; 
+	font-size: 1.25rem;
+	padding: 0.625rem 1.25rem;
+	border-radius: 1.25rem;
+	border: none;
+	background-color: #00FFFF;
+	outline: none;
+}
+#submit{
+	width: 50%;
+	height: 3.125rem;
+	background-color: #F3F3FA;
+	border-radius: 0.625rem;
+	margin-top: 0.625rem;
+	margin-left: 25%;
+	outline: none;
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>用户中心</title>
+		<link rel="stylesheet" href="../CSS/Header.css" />
+		<link rel="stylesheet" href="../CSS/information.css" />
+		<link rel="stylesheet" href="../CSS/chageInformation.css"
+	</head>
+	<body>
+		<div id="Header" style="width: 100%;">
+			<div id="iconBox">
+				<img src="../img/logo.png" />
+			</div>
+			<div id="items">
+				<h2>用户中心</h2>
+			</div>
+			<div id="user">
+				<p id="username"></p>
+				<img src="../img/headerImage.png" />
+			</div>
+		</div>
+		<script src="../script/Header.js"></script>
+		
+		<div id="contain">
+			<div id="leftContain">
+				<ul id="menu">
+					<li><a href="userInformation.html"> 查看个人信息 </a></li>
+					<li><a href="#"> 查看医生信息 </a></li>
+					<li><a href="#"> 查看电子病例 </a></li>
+					<li><a href="userIndex.html"> 返回首页 </a></li>
+					<li><a href="#" id="loginOut" onclick="loginOut()"> 退出登录 </a></li>
+				</ul>
+			</div>
+			<div id="rightContain">
+				<div><span>用户ID</span><input id="userId" type="text" readonly="readonly" v-model="user.userId" /></div>
+				<div><span>密码</span><input id="password" type="password"  v-model="user.password" onchange="changePassword()" /></div>
+				<div id="repasswordBox" style="display: none;"><span>确认密码</span><input id="repasssword" type="password" value="" /></div>
+				<div><span>姓名</span><input id="name" type="text" readonly="readonly" v-model="user.name" /></div>
+				<div><span>疾病</span><input id="disease" type="text" readonly="readonly" v-model="user.disease" /></div>
+				<div><span>科室</span><input id="department" type="text" readonly="readonly" v-model="user.department" /></div>
+				<div><span>医生姓名</span><input id="doctorId" type="text" readonly="readonly" v-model="user.doctorName" /></div>
+				<button id="submit" disabled="disabled" onclick="updata('users')">保存</button>
+			</div>
+		</div>
+		<script src="../script/information.js"></script>
+		<script src="../script/vue.js"></script>
+		<script>
+			var main = new Vue({
+				el:"#rightContain",
+				data:{
+					user:{
+						userId: "",
+						password: "",
+						name: "",
+						disease: "",
+						departmenet:"",
+						symptom:"",
+						doctorId:"",
+						doctorName:""
+					}
+				},
+				methods:{
+					
+				}
+			})
+			
+			var user = JSON.parse(sessionStorage.getItem("user"));
+			main.user = user;
+			main.user.password = "";
+		</script>
+		
+	</body>
+</html>

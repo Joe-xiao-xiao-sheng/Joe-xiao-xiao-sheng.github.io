@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>注册页面</title>
+		<link rel="stylesheet" href="../CSS/create.css" />
+	</head>
+	<body>
+		<div id="Header">
+			<div id="block1">
+				<img src="../img/logo.png" />
+				<span>智慧医疗</span>
+			</div>
+			<div id="block2">
+				<h2>注册</h2>
+			</div>
+			<div id="block3">
+				<p>已有账号？<a href="Login.html">马上登录</a></p>
+			</div>
+			
+			
+		</div>
+		<div id="createBox">
+			<div class="line"><span>用户名</span><input v-model="user.name" type="text" /></div>
+			<div class="line"><span>身份证号</span><input v-model="user.userId" type="text" /></div>
+			<div class="line"><span>密码</span><input v-model="user.password" type="password" /></div>
+			<div class="line"><span>确认密码</span><input v-model="rePassword" type="password" /></div>
+			<div class="line">
+				<span>角色</span>
+				<select id="roleSelect" v-model="user.role" class="select" @change="selectAction($event.target.value)">
+					<option class="selectItem" v-for="item in roles" :value="item" >{{item}}</optgroup>
+				</select>
+			</div>
+			<div id="doctorSelect">
+				<div class="line">
+					<span>科室</span>
+					<select v-model="user.department" class="select">
+						<option class="selectItem" v-for="item in Departments" :value="item">{{item}}</option>
+					</select>
+				</div>
+				<div class="line">
+					<span>职位</span>
+					<select v-model="user.position" class="select">
+						<option class="selectItem" v-for="item in positions" :value="item">{{item}}</optgroup>
+					</select>
+				</div>
+			</div>
+			<button id="createButton" @click="submitInfo()">注册</button>
+			<!-- 用户协议待加入 -->
+		</div>
+		<script src="../script/vue.js"></script>
+		<script>
+			var app = new Vue({
+				el:"#createBox",
+				data:{
+					user:{
+						name:"",
+						userId:"",
+						password:"",
+						role:"",
+						department:"",
+						position:""
+					},
+					rePassword:"",
+					Departments:["妇产科"],
+					positions:["主治医生","医师"],
+					roles:["患者","医生"]
+				},
+				methods:{
+					selectAction: function(item){
+						console.log(item)
+						if(item == "医生"){
+							var doctorBox = document.getElementById("doctorSelect");
+							doctorBox.style.display = "block";
+						}
+						else if(item == "患者"){
+							var doctorBox = document.getElementById("doctorSelect");
+							doctorBox.style.display = "none";
+						}
+						console.log(" role " + app.user.role)
+					},
+					submitInfo: function(){
+						if(app.user.name == "")		{alert("用户名不能为空"); return ;}  
+						if(app.user.userId.length != 18)	{alert("省份证号不符合规范"); return ;}
+						if(app.user.password == "" || app.rePassword == "" || app.rePassword != app.user.password)	{alert("密码不能为空或两次输入密码不一致"); return ;}
+						if(app.user.role == "")		{alert("角色不能为空"); return ;}  
+						if(app.user.role == "医生"){
+							if(app.user.department == "") {alert("科室不能为空"); return ;}  
+							if(app.user.position == "")		{alert("职位不能为空"); return ;}  
+						}
+						console.log(JSON.stringify(app.user))
+						fetch("http://localhost:8081/login/create",{
+							method: 'POST',
+							body: JSON.stringify(app.user),
+							headers:{
+								'Content-Type': 'application/json'
+							}
+						}).then(resp => {
+							if(resp.ok) return resp.json()
+							else throw new Error("请求错误,请检查网络信息")
+						}).then(data => {
+							if(data.success == false){
+								alert("创建失败请重试");
+							}
+							else if(data.success == true){
+								alert("创建成功");
+								window.location.href = "Login.html";
+							}
+						});
+						
+					},
+				}
+			})
+		</script>
+	</body>
+</html>

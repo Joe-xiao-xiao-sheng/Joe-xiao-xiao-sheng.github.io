@@ -1,0 +1,71 @@
+#Header{
+	width: 100%;
+	height: auto;
+	display: flex;
+	position: relative;
+	background-color: 	#FFECF5;
+}
+#block1{
+	width: 10%;
+	padding-left: 0.625rem;
+}
+#block2{
+	width: 75%;
+}
+#block3{
+	width: 15%;
+}
+#block1 img{
+	margin-top: 0.625rem;
+	width: 3rem;
+	height: 3rem;
+}
+#block1 span{
+	display: inline-block;
+	margin-bottom: 0.625rem;
+}
+.select{
+	width: 9.375rem;
+	padding:0.3125rem 0.625rem;
+	border-radius: 0.3125rem;
+	font-size: 0.9375rem;
+}
+.selectItem{
+	text-align: center;
+}
+.line{
+	margin: 0.625rem;
+}
+.line span{
+	font-size: 1.25rem;
+	display: inline-block;
+	width: 6.25rem;
+	/* text-align: center; */
+}
+.line input{
+	border-radius: 0.625rem;
+	font-size: 0.9375rem;
+	padding:0.3125rem 0.625rem;
+	background-color: 	#FFF7FB;
+}
+#doctorSelect{
+	display: none;
+}
+/* body{
+	width: 90%;
+	display: flex;
+	justify-content: center;
+	background-color: #00FFFF;
+} */
+#createBox{
+	margin-left: 35%;
+}
+#createButton{
+	width: 12.5rem;
+	background-color: #00FFFF;
+	border: none;
+	border-radius:0.625rem ;
+	font-size: 1.25rem;
+	padding: 0.325rem;
+	margin-left: 3.125rem;
+}

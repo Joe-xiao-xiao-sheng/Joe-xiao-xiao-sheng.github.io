@@ -1,0 +1,76 @@
+
+.loginContain{
+	height: 37.5rem;
+	position: relative;
+	margin: auto;
+	
+}
+#form h2{
+	text-align: center;
+	color: #95CACA;
+}
+#contain{
+	height: 37.5rem;
+	width: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.formContain{
+	background-color: #8F8F94;
+	height: 25rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.formContain span{
+	font-size: 1.25rem;
+	opacity: 0.5;
+}
+#roleSelect{
+	border-radius: 0.625rem;
+	width: 5.25rem;
+	padding-left: 0.625rem;
+	font-size: 1.25rem;
+	margin-left: 2.25rem;
+	height: 1.875rem;
+	color: #555555;
+}
+#button{
+	border-radius: 0.625rem;
+	width: 6.25rem;
+	height: 2rem;
+	margin-left: 2.25rem;
+	font-size: 1.25rem;
+	color: #555555;
+}
+.formContain .item{
+	margin: 1.25rem 0.625rem;
+}
+.formContain #password{
+	border-radius: 1.25rem;
+	font-size: 1.25rem;
+	padding: 0.1rem 0.75rem;
+	width: 12.5rem;
+}
+.formContain #userid{
+	border-radius: 1.25rem;
+	font-size: 1.25rem;
+	padding: 0.1rem 0.75rem;
+	width: 12.5rem;
+}
+.viewContain{
+	
+}
+.viewContain img{
+	margin-top: 0.1875rem ;
+	outline: #4CD964;
+	width: 25rem;
+	height: 25rem;
+}
+#createInfomation{
+	position: relative;
+	top: 5.2rem;
+	left: 0.5rem;
+	
+}

@@ -1,0 +1,92 @@
+#main{
+	margin-top: 0.625rem;
+	display: flex;
+	position: relative;
+	justify-content: center;
+}
+#contain{
+	display: flex;
+	width: 70%;
+	position: relative;
+	height: 50rem;
+	background-color: #00FFFF;
+	border-radius: 1.25rem;
+	border: #000000 solid 0.0625rem;
+}
+#record{
+	overflow-y: scroll;
+}
+#tips #tipText{
+	position: relative;
+	top: 31.25rem;
+	width: 12.5rem;
+	height: 6.25rem;
+	margin-left: 0.625rem;
+	padding: 0.625rem;
+	border: solid #000000 0.0625rem;
+	font-family: "bodoni mt";
+	background-color: #F0F8FF;
+	border-radius: 0.625rem;
+}
+#tips img{
+	display: block;
+	position: relative;
+	left: 0.625rem;
+	top: 31.25rem;
+	width: 12.5rem;
+	height: 12.5rem;
+}
+#tips img:hover{
+	cursor: pointer;
+}
+#textContain{
+	margin-left: 1.25rem;
+	width: 70%;
+	height: 92%;
+	padding: 1.25rem;
+}
+#labelContain{
+	padding: 1.25rem;
+	background-image: linear-gradient(-45deg, 	#FFF4C1, #D2E9FF, #D9B3B3 , #95CACA);
+	border-radius: 1.25rem;
+	width: 30%;
+}
+#textContain #record{
+	width: 100%;
+	height: 90%;
+	background-color: aliceblue;
+}
+#record span{
+	display: inline-block;
+	margin-top: 0.625rem;
+	border: aqua solid 0.0625rem;
+	padding: 0.625rem;
+}
+#record img{
+	display: inline-block;
+	width: 2.5rem;
+}
+#textContain #write{
+	width: 100%;
+	height: 10%;
+	display: flex;
+}
+#write textarea{
+	margin: 0.625rem;
+	padding: 0.3125rem;
+	width: 100%;
+	height: 100%;
+	font-size: 1.75rem;
+	padding-left: 0.625rem;
+	border-radius: 1.25rem;
+	display: block;
+}
+#write button{
+	height: 100%;
+	background-color: aliceblue;
+	border-radius: 0.625rem;
+	margin-top: 0.625rem;
+}
+#labelContain .eltag{
+	margin: 0.625rem;
+}

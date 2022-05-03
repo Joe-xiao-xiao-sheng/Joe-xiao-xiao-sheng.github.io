@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="../CSS/Header.css" />
+		<link rel="stylesheet" href="../plugins/elementui/index.css" />
+		<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.css" />
+		<script src="../script/Header.js"></script>
+		<script src="../script/vue.js"></script>
+		<script src="../plugins/elementui/index.js"></script>
+	</head>
+	<body>
+		<div id="Header" style="width: 100%;">
+			<div id="iconBox">
+				<img src="../img/logo.png" />
+			</div>
+			<ul id="items">
+				<li class="item_li" ><a href="userIndex.html">首页</a></li>
+				<li class="item_li" ><a href="QuickConsultation.html" style="color: #ffd04b;">立即就诊</a></li>
+			</ul>
+			<div id="user" onclick="getUserDetail()">
+				<p id="username"></p>
+				<img src="../img/headerImage.png" />
+			</div>
+		</div>
+		<div id="contain" style="display: flex; justify-content: center;">
+			<div id="leftContain" style="width: 20%; height: 43.75rem; overflow-y: auto;">
+				<el-collapse accordion>
+					<div v-for="(item,index) in departments" style="padding: 0.625rem; border-bottom: 0.0625rem solid #F0F0F0;" class="departementLine" @click="getAllDoctor(item.name)">{{item.name}}</div>
+				</el-collapse>
+			</div>
+			<div id="rightContain" style="width: 70%; margin-left: 2%;">
+				<template>
+				  <el-table :data="doctors" border style="width: 100%">
+				    <el-table-column fixed prop="name" label="姓名" width="150"></el-table-column>
+					<el-table-column fixed prop="department" label="科室" width="150"></el-table-column>
+					<el-table-column fixed prop="underPatient" label="在诊人数" width="150"></el-table-column>
+				      fixed="right"
+				      label="操作"
+				      width="100">
+				      <template slot-scope="scope">
+				        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+				        <el-button type="text" size="small">编辑</el-button>
+				      </template>
+				    </el-table-column>
+				  </el-table>
+				</template>
+				
+				
+				<template>
+				  <el-table
+				    :data="doctors"
+				    border
+				    style="width: 100%">
+				    <el-table-column
+				      fixed
+				      prop="name"
+				      label="姓名"
+					  align="center"
+				      width="150">
+				    </el-table-column>
+				    <el-table-column
+				      prop="department"
+				      label="科室"
+					  align="center"
+				      width="120">
+				    </el-table-column>
+					<el-table-column
+					  prop="position"
+					  label="职位"
+					  align="center"
+					  width="120">
+					</el-table-column>
+				    <el-table-column
+				      prop="underPatient"
+				      label="在诊人数"
+					  align="center"
+				      width="120">
+				    </el-table-column>
+				    <el-table-column
+				      align="center"
+				      label="操作"
+				      width="100">
+				      <template slot-scope="scope">
+				        <el-button @click="choseDoctor(scope.row)" type="text" size="small">选择</el-button>
+				      </template>
+				    </el-table-column>
+				  </el-table>
+				</template>
+			</div>
+		</div>
+		
+		
+		
+		
+		<script>
+			var user = JSON.parse(sessionStorage.getItem("user"));
+			if(user == null ) { 
+				alert("请先登录");
+				window.location.href = "Login.html";
+			}
+			if(user.doctorId != null){
+				window.location.href = "ChatWithDoctor.html"
+			}
+			var app = new Vue({
+				el:"#contain",
+				data(){
+					return {
+						departments:["外科","内科","妇产科"],
+						doctors:[
+							{doctorId:'309222d19',name:'王小二',underPatient:10,department:'外科',position:'见习医生'}
+						],
+						
+					};
+				},
+				created() {
+					fetch("http://localhost:8081/consultation/departmentlist",{
+						method: 'GET',
+						headers:{
+							'Content-Type': 'application/json'
+						}
+					}).then(resp => {
+						if(resp.ok) return resp.json()
+						else throw new Error("请求错误,请检查网络信息")
+					}).then(data => {
+						if(data.success == false)	return;
+						app.departments = data.data;
+					})
+				},
+				methods:{
+					getAllDoctor: function(e){
+						fetch("http://localhost:8081/doctors/list?department=" + e,{
+							method: 'GET',
+							headers:{
+								'Content-Type': 'application/json'
+							}
+						}).then(resp => {
+							if(resp.ok) return resp.json()
+							else throw new Error("请求错误,请检查网络信息")
+						}).then(data => {
+							if(data.success == false)	return;
+							app.doctors = data.data;
+						})
+					},
+					choseDoctor: function(i){
+						var user = JSON.parse(sessionStorage.getItem("user"));
+						if(user == null)	return ;
+						user.doctorId = i.doctorId;
+						user.doctorName = i.name;
+						fetch("http://localhost:8081/consultation/chose",{
+							method: 'POST',
+							body: JSON.stringify(user),
+							headers:{
+								'Content-Type': 'application/json'
+							}
+						}).then(resp => {
+							if(resp.ok) return resp.json()
+							else {
+								user.doctorId = "";
+								user.doctorName = "";
+								throw new Error("请求错误,请检查网络信息")
+							}
+						}).then(data => {
+							if(data.success == false)	{
+								user.doctorId = "";
+								user.doctorName = "";
+								return;
+							}
+							alert("选择成功");
+							sessionStorage.removeItem("user");
+							sessionStorage.setItem("user",JSON.stringify(user));
+							window.location.href = "ChatWithDoctor.html"
+						})
+					}
+				}
+			})
+		
+		</script>
+		
+		<style>
+			.departementLine:hover{
+				cursor: pointer;
+				background-color: #D9FFFF;
+			}
+		</style>
+	</body>
+</html>

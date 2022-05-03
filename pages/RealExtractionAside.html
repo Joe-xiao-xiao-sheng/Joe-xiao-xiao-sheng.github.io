@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>实体识别</title>
+		<!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+		<link rel="stylesheet" href="../plugins/elementui/index.css" />
+		<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.css" />
+		<link rel="stylesheet" href="../CSS/RealExtractionAsideCSS.css" />
+		<link rel="stylesheet" href="../CSS/Header.css" />
+		<script src="../plugins/elementui/index.js"></script>
+	</head>
+	<body>
+			<div id="Header" style="width: 100%;">
+				<div id="iconBox">
+					<img src="../img/logo.png" />
+				</div>
+				<ul id="items">
+					<li class="item_li"><a href="index.html">样本标注</a></li>
+					<li class="item_li"><a href="RealExtractionAside.html" style="color: #ffd04b;">实体识别</a></li>
+					<li class="item_li"><a href="Atlas.html">知识图谱</a></li>
+				</ul>
+				<div id="user" onclick="getUserDetail()">
+					<p id="username"></p>
+					<img src="../img/headerImage.png" />
+				</div>
+			</div>
+			<div id="contain">
+				<div id="checkboxContain" >
+					<div class="CheckBox" v-for="checkbox in checkBoxs">
+						<el-checkbox-group v-model="checkbox.check" size="medium">
+							<el-button class="checkBoxTitle" icon="" @click="ShowChange(checkbox.name)">{{checkbox.name}}</el-button>
+							<el-checkbox class="checkBoxItem" v-if="checkbox.show" @change="checkChange()" v-for="item in checkbox.data" :label="item" :key="item">{{item}}</el-checkbox>
+						</el-checkbox-group>
+					</div>
+				</div>
+				<div id="main">					
+					<p v-for="item in text" v-html="item"></p>
+				</div>
+				<div id="keys">
+					<h4><span id="symptom">&nbsp;&nbsp;&nbsp;&nbsp; </span>症状({{symptom.length}})</h4>
+					<div id="symptomBox">
+						<span class="symptom" v-for="item in symptom">{{item}}</span>
+					</div>
+					
+					<h4><span id="sign">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>体征({{sign.length}})</h4>
+					<div id="signBox">
+						<span class="sign" v-for="item in sign">{{item}}</span>
+					</div>	
+				</div>
+			</div>
+		
+		
+		
+		
+		<script src="../script/vue.js"></script>
+		<script src="../script/axios-0.18.0.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<script src="../script/Header.js"></script>
+		<script>
+		
+			//构造函数，直接发送请求获取数据
+			function loadData(){
+				fetch("http://localhost:8081/realextra",{
+					method: 'GET',
+					headers:{
+						'Content-Type': 'application/json'
+					}
+				}).then(resp => {
+					if(resp.ok) return resp.json()
+					else throw new Error("请求错误,请检查网络信息")
+				}).then(data => {
+					contain.text = data.data.textList;
+					contain.symptom = data.data.symptomList;
+				})
+			}
+		
+		
+			// import qs from 'qs'
+			var text = "hello";
+			var contain = new Vue({
+				el:"#contain",
+				data:{
+					checkBoxs:[
+						{name:"疾病",	check:[],show:false,	data:["骨质增生","腰椎病"]},
+						{name:"临床表现",check:[],show:false,	data:["背部酸痛","恶心","干呕"]},
+						{name:"药物",	check:[],show:false,	data:["阿莫西林胶囊","头孢"]},
+						{name:"医疗设备",check:[],show:false,	data:["X光片","激光手术台"]},
+						{name:"医疗程序",check:[],show:false,	data:["手术","住院勘察"]},
+						{name:"身体",	check:[],show:false,	data:["胃部","食道"]},
+						{name:"医学检验项目",check:[],show:false,data:["体检","尿检"]},
+						{name:"微生物类",check:[],show:false,	data:["大肠杆菌","噬菌体"]},
+						{name:"科室",	check:[],show:false,	data:["外科","内科"]},
+					],
+					text:[],
+					respData:"",
+					symptom:["尿量减少","呼吸急促","呼吸困难"],
+					sign:["心脏扩大","心动过速"],
+					disease:[]
+				},
+				methods:{
+					ShowChange: function(name){
+						for(item in this.checkBoxs){
+							if(name == this.checkBoxs[item].name)	this.checkBoxs[item].show = !this.checkBoxs[item].show;
+						}
+					},
+					checkChange: function(){
+						var list = "";
+						var slef = this;
+						for(item in this.checkBoxs){
+							for(index in this.checkBoxs[item].check){
+								list += this.checkBoxs[item].check[index] + " ";
+							}
+						}
+						// console.log(list)
+						axios.get("http://localhost:8080/realextra/getText?list=" + list).then(function(resp){
+							slef.respData = resp.data.data;
+							
+						})
+					},
+				}
+			})
+		
+		
+			loadData();
+		
+		</script>
+		
+		
+	</body>
+</html>
